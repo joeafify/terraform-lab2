@@ -2,7 +2,7 @@ pipeline {
     agent any
     parameters {
         choice(name: 'workspace', choices: ["dev", "prod"], description: 'Select Environment')
-        booleanParam(name: 'destroy', defaultValue: false, description: 'Destroy Infrastructure?')
+        booleanParam(name: 'destroy', defaultValue: false, description: 'Destroy?')
     }
     environment {
         AWS_ACCESS_KEY_ID     = credentials('AWS_ACCESS_KEY_ID')
@@ -12,36 +12,28 @@ pipeline {
         stage('Pull Code') {
             steps {
                  script{
-                            git "https://github.com/Ziad-Tawfik/Terraform-Playground.git"
+                            git "https://github.com/joeafify/terraform-lab2.git"
                     }
                 }
             }
         stage('Choose workspace & initialize') {
             steps {
-                dir("Lab2") {
-                    echo 'Choosing Workspace .....'
-                    sh "terraform workspace list"
+                script {
                     sh "terraform workspace select -or-create ${params.workspace}"
-                    sh "terraform workspace list"
                     sh "terraform init"
                 }
             }
         }
         stage('Plan & Apply or Destroy') {
             steps {
-                dir("Lab2") {
                 script {
                     if (params.destroy) {
                         sh "terraform destroy --var-file=${params.workspace}.tfvars -auto-approve"
                     }
                     else {
-                        sh "terraform plan --var-file=${params.workspace}.tfvars"
                         sh "terraform apply --var-file=${params.workspace}.tfvars -auto-approve"
                     }
                 }
-                    
-                }
-                
             }
         }
     }
