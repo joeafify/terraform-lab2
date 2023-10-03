@@ -5,6 +5,7 @@ terraform {
     region         = "us-east-1"
     # encrypt        = true
     dynamodb_table = "terraform-tfstate-locking"
-    # profile        = "terraform"
+    profile        = "terraform"
+    shared_credentials_files = ["/root/.aws/credentials"]
   }
 }
