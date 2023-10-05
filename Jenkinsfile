@@ -9,16 +9,26 @@ pipeline {
         AWS_SECRET_ACCESS_KEY = credentials('AWS_SECRET_ACCESS_KEY')
     }
     stages {
+         stage('authenticate with aws'){
+            steps{
+                script {
+                sh 'echo [terraform] > credentials'
+                sh 'echo aws_access_key_id=$AWS_ACCESS_KEY_ID >> credentials'
+                sh 'echo aws_secret_access_key=$AWS_SECRET_ACCESS_KEY >> credentials'
+               }
+            }
+        }
         stage('Pull Code') {
             steps {
                  script{
-                            git "https://github.com/joeafify/terraform-lab2.git"
+                        git "https://github.com/joeafify/terraform-lab2.git"
                     }
                 }
             }
         stage('Choose workspace & initialize') {
             steps {
                 script {
+                    sh "terraform init"
                     sh "terraform workspace select -or-create ${params.workspace}"
                     sh "terraform init"
                 }
