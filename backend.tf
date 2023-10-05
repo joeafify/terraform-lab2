@@ -6,6 +6,6 @@ terraform {
     # encrypt        = true
     dynamodb_table = "terraform-tfstate-locking"
     profile        = "terraform"
-    shared_credentials_file = ["credentials"]
+    shared_credentials_file = "credentials"
   }
 }
